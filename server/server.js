@@ -1,9 +1,25 @@
-const app = require('./app.js');
+const express = require('express');
 
-const host = process.env.host || '0.0.0.0';
-const port = process.env.port || '8080';
+const port = 3000;
 
-app.listen(port, host, () => {
+const app = express();
+
+const Axios = require('axios');
+
+const cors = require('cors');
+
+app.use(cors());
+
+app.use(express.static('dist'));
+
+app.get('/cryptobit', (req, res) => {
+  Axios.get('https://api.coindesk.com/v1/bpi/historical/close.json')
+  .then(({data}) => {
+      res.send(data)
+  })
+})
+
+app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Now listening on ${host}:${port}`);
+  console.log(`Now listening on ${port}`);
 });
